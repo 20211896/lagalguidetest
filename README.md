@@ -1,5 +1,7 @@
 # 인공지능 기반 외국인 노동자 근로 계약서 번역 및 법률 정보 제공 앱
-[Uploading 25 SWAI 경진대회.pdf…]()
+
+(https://www.canva.com/design/DAGoj70TT6s/X-BYGVyFWL8FQbz0JJIIuw/edit?utm_content=DAGoj70TT6s&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
 
 정민성, 이수현, 육종범, 옥주용, 강윤서, *황경호
 
