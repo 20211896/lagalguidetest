@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { GoArrowLeft } from "react-icons/go";
 import { FiUpload } from "react-icons/fi";
@@ -11,44 +11,22 @@ const Result = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const resultData = location.state?.result || {};
-    console.log(resultData)
+    console.log(resultData);
 
     const [contractId, setContractId] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-
 
     useEffect(() => {
-        const fetchContracts = async () => {
-            try {
-                const user = JSON.parse(localStorage.getItem("user") || "{}");
-                const memberId = user.memberId;
-                console.log(memberId)
-                if (!memberId) {
-                    throw new Error("memberId가 없습니다.");
-                }
-
-                const response = await axios.get(
-                    "https://port-0-mobicom-sw-contest-2025-umnqdut2blqqevwyb.sel4.cloudtype.app/api/contract",
-                    { params: { memberId } }
-                );
-
-                // 3) 배열로 반환된 계약서 중 첫 번째 항목에서 contractId 추출
-                const contracts = response.data;
-                if (Array.isArray(contracts) && contracts.length > 0) {
-                    setContractId(contracts[0].contractId);
-                    console.log("불러온 Contract ID:", contracts[0].contractId);
-                } else {
-                    throw new Error("조회된 계약서가 없습니다.");
-                }
-            } catch (err) {
-                console.error("계약서 조회 실패:", err);
-                setError(err.message);
-            }
-        };
-
-        fetchContracts();
-    }, []);
+        // OCR에서 전달받은 contractId 사용
+        if (resultData.contractId) {
+            setContractId(resultData.contractId);
+            console.log("OCR에서 전달받은 contractId:", resultData.contractId);
+        } else {
+            console.warn("resultData에 contractId가 없습니다:", resultData);
+            setError("계약서 ID를 가져올 수 없습니다. OCR 처리를 다시 시도해주세요.");
+        }
+    }, [resultData]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const goOcr = () => navigate("/ocr");
     const goRender = () => navigate("/render", { state: { result: resultData } });
@@ -69,12 +47,16 @@ const Result = () => {
     };
 
     const analyzeLegalInfo = async () => {
-        if (!contractId) return;
+        if (!contractId) {
+            setError("계약서 ID가 없습니다.");
+            return;
+        }
 
         setLoading(true);
         setError(null);
 
         try {
+            console.log("법률 분석 요청 - contractId:", contractId);
             const response = await axios.post(
                 `https://port-0-mobicom-sw-contest-2025-umnqdut2blqqevwyb.sel4.cloudtype.app/api/contracts/${contractId}/analyze`
             );
@@ -82,7 +64,6 @@ const Result = () => {
             const newLaws = response.data.laws || [];
             const prevLaws = JSON.parse(localStorage.getItem("allLaws") || "[]");
 
-            // referenceNumber 기준 중복 제거
             const map = new Map();
             [...prevLaws, ...newLaws].forEach(law => {
                 map.set(law.referenceNumber, law);
@@ -90,8 +71,14 @@ const Result = () => {
 
             localStorage.setItem("allLaws", JSON.stringify([...map.values()]));
 
-            console.log(contractId)
-            navigate("/ocr-summary", { state: { analysis: response.data, result: resultData, contractId} });
+            console.log("분석 완료, contractId:", contractId);
+            navigate("/ocr-summary", { 
+                state: { 
+                    analysis: response.data, 
+                    result: resultData, 
+                    contractId 
+                } 
+            });
         } catch (err) {
             console.error("법률 분석 실패:", err);
             setError(`법률 분석 실패: ${err.message} (${err.response?.status || "알 수 없는 오류"})`);
@@ -123,7 +110,7 @@ const Result = () => {
                 </div>
 
                 <div className="saveAndShareBtn">
-                    <button onClick={handleSave} disabled={!contractId}>
+                    <button onClick={handleSave}>
                         <FaRegSave className="icon" /> 저장하기
                     </button>
                     <button><FiUpload className="icon" />공유하기</button>

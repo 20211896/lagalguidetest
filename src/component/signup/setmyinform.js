@@ -25,8 +25,15 @@ const Setmyinform = () => {
         }));
     };
 
+    const handleSelectChange = (field) => (e) => {
+        setFormData(prev => ({
+            ...prev,
+            [field]: e.target.value
+        }));
+    };
+
     const goNext = () => {
-        console.log(formData)
+        console.log(formData);
         navigate("/signup", { state: formData });
     };
 
@@ -49,9 +56,9 @@ const Setmyinform = () => {
                 <div className="main_main">
                     <div className="form_row">
                         <label>국적</label>
-                        <SelectNation value={formData.nationality} onChange={e => setFormData(prev => ({ ...prev, nationality: e.target.value }))} />
+                        <SelectNation value={formData.nationality} onChange={handleSelectChange('nationality')} />
                         <label>사용 언어</label>
-                        <SelectLanguage value={formData.language} onChange={e => setFormData(prev => ({ ...prev, language: e.target.value }))} />
+                        <SelectLanguage value={formData.language} onChange={handleSelectChange('language')} />
                         <label>이름</label>
                         <input className="inputBox" name="name" placeholder="이름을 입력하세요" value={formData.name} onChange={handleChange} />
                         <label>연락처</label>

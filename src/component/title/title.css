@@ -14,7 +14,6 @@
 .titlePage h1{
     font-weight: bold; 
     font-size: 23px;
-
 }
 
 .titlePage p{
@@ -34,7 +33,6 @@
     flex-direction: row;
     gap: 14px;
 }
-
 
 .titlePage .main_main_btn button {
     width: 178px;    

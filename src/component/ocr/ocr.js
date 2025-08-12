@@ -21,15 +21,20 @@ const Ocr = () => {
             return;
         }
 
-        const formData = new FormData();
-        formData.append("file", file);
-
         setLoading(true);
         setError(null);
 
         try {
+            // 사용자 정보 가져오기
+            const user = JSON.parse(localStorage.getItem("user") || "{}");
+            const memberId = user.memberId || 1;
+
+            // 실제 OCR API 호출 - 계약서 생성 + OCR 처리
+            const formData = new FormData();
+            formData.append("file", file);
+
             const response = await axios.post(
-                "https://port-0-mobicom-sw-contest-2025-umnqdut2blqqevwyb.sel4.cloudtype.app/api/contract/1/upload-and-translate",
+                `https://port-0-mobicom-sw-contest-2025-umnqdut2blqqevwyb.sel4.cloudtype.app/api/contract/${memberId}/upload-and-translate`,
                 formData,
                 {
                     headers: {
@@ -37,18 +42,27 @@ const Ocr = () => {
                     }
                 }
             );
-            console.log(response.data)
-            // 성공 시 결과 페이지로 이동하면서 데이터 전달
-            navigate("/ocr-result", { state: { result: response.data } });
-            
+
+            console.log("OCR 응답:", response.data);
+
+            // 실제 서버 응답에서 데이터 추출
+            const resultData = {
+                originalImage: URL.createObjectURL(file), // 업로드한 원본 이미지
+                translatedImage: response.data.translatedImageUrl || "https://mobicom-contest-bucket-2025.s3.ap-northeast-2.amazonaws.com/contracts/translated/02521fe4-2421-4494-b06e-8bf971ddade2_11_translated.jpg",
+                title: "근로계약서 OCR 결과",
+                fileName: file.name,
+                uploadDate: new Date().toISOString(),
+                contractId: response.data.contractId, // 서버에서 생성된 실제 contractId
+                ...response.data // 서버에서 온 다른 데이터들도 포함
+            };
+
+            setLoading(false);
+            console.log("생성된 결과 데이터:", resultData);
+            navigate("/ocr-result", { state: { result: resultData } });
+
         } catch (err) {
             console.error("업로드 실패:", err);
-            if (err.response) {
-                setError(`업로드 실패 (${err.response.status}): ${JSON.stringify(err.response.data)}`);
-            } else {
-                setError(`업로드 실패: ${err.message}`);
-            }
-        } finally {
+            setError(`업로드 실패: ${err.message} (${err.response?.status || "알 수 없는 오류"})`);
             setLoading(false);
         }
     };
@@ -67,7 +81,6 @@ const Ocr = () => {
                         <span>개인정보는 자동으로 필터링됩니다.</span>
                     </div>
                     <div className="main_btm">
-                        {/* 카메라 버튼 */}
                         <label className="cameraBtn">
                             <IoCameraOutline className="icon" />
                             <p>카메라</p>
@@ -80,7 +93,6 @@ const Ocr = () => {
                             />
                         </label>
 
-                        {/* 파일 업로드 버튼 */}
                         <label className="uploadBtn">
                             <FiUpload className="icon" />
                             <p>업로드</p>
@@ -92,7 +104,6 @@ const Ocr = () => {
                             />
                         </label>
                     </div>
-
 
                     {loading && <p>업로드 중입니다...</p>}
                     {error && <p style={{ color: "red" }}>{error}</p>}

@@ -10,26 +10,23 @@ const Summary = () => {
     const navigate = useNavigate();
     const { state } = useLocation();
     const { analysis, result, contractId } = state || {};
-    console.log("▶ Summary useEffect, contractId:", contractId);
+    console.log("▶ Summary, contractId:", contractId);
 
     const issues = analysis?.issues || [];
     const laws = analysis?.laws || [];
 
-    // lawinfo 조회 상태
     const [lawInfos, setLawInfos] = useState([]);
 
-    // contractId 가 준비되면 lawinfo GET
     useEffect(() => {
-
         if (!contractId) return;
 
         const fetchLawInfo = async () => {
             try {
-                const { data } = await axios.get(
+                const response = await axios.get(
                     `https://port-0-mobicom-sw-contest-2025-umnqdut2blqqevwyb.sel4.cloudtype.app/api/contracts/${contractId}/lawinfo`
                 );
-                console.log("GET /lawinfo 응답:", data);
-                setLawInfos(data);
+                console.log("GET /lawinfo 응답:", response.data);
+                setLawInfos(response.data);
             } catch (err) {
                 console.error("법률정보 조회 실패:", err);
             }
@@ -38,8 +35,6 @@ const Summary = () => {
         fetchLawInfo();
     }, [contractId]);
 
-
-    // analysis.laws 에 lawInfoId 등을 머지
     const enrichedLaws = laws.map(law => {
         const info = lawInfos.find(li => li.referenceNumber === law.referenceNumber);
         return {
@@ -48,7 +43,6 @@ const Summary = () => {
             detailURL: info?.detailURL
         };
     });
-
 
     const goResult = () => navigate("/ocr-result", { state: { result } });
 
@@ -73,7 +67,6 @@ const Summary = () => {
                         </p>
                     )}
 
-                    {/* 검토사항 */}
                     {issues.map((issue, idx) => (
                         <div className="main_box" key={`issue-${idx}`}>
                             <div className="main_box_title">
@@ -96,7 +89,6 @@ const Summary = () => {
                         </div>
                     ))}
 
-                    {/* 관련법률 정보 */}
                     {enrichedLaws.map((law, idx) => (
                         <div className="main_box" key={`law-${idx}`}>
                             <div className="main_box_title">
@@ -140,7 +132,6 @@ const Summary = () => {
                         </div>
                     ))}
 
-                    {/* 주의 박스 */}
                     {issues.length > 0 && (
                         <div className="warning_box">
                             <div className="warning_title">

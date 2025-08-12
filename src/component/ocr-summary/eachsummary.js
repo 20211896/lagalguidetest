@@ -127,11 +127,14 @@ const Eachsummary = () => {
                         </>
                     )}
                 </div>
-
                 {lawDetail?.detailUrl && (
-                    <a href={lawDetail.detailUrl} target="_blank" rel="noopener noreferrer" className="BlueBtn">
-                            <span>국가법령정보센터에서 보기<HiArrowTopRightOnSquare className="icon" /></span>
-                            
+                    <a
+                        href={`https://www.law.go.kr${lawDetail.detailUrl}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="BlueBtn"
+                    >
+                        <span>국가법령정보센터에서 보기<HiArrowTopRightOnSquare className="icon" /></span>
                     </a>
                 )}
 
