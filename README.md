@@ -1,70 +1,50 @@
-# Getting Started with Create React App
+# 인공지능 기반 외국인 노동자 근로 계약서 번역 및 법률 정보 제공 앱
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+(https://www.canva.com/design/DAGoj70TT6s/X-BYGVyFWL8FQbz0JJIIuw/edit?utm_content=DAGoj70TT6s&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
-## Available Scripts
 
-In the project directory, you can run:
+정민성, 이수현, 육종범, 옥주용, 강윤서, *황경호
 
-### `npm start`
+요 약 
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+ 본 논문은 외국인 노동자의 권리 보호와 고용주-노동자 간 분쟁 예방을 목표로, 인공지능 기술을 접목한 근로계약서 번역 및 법률 정보 제공 플랫폼 “Legal Guide”의 설계와 구현을 다루었다. 외국인 노동자 증가와 이에 따른 분쟁 증가 문제를 해결하기 위하여, 본 플랫폼은 Optical Character Recognition (OCR) 기반 계약서 텍스트 인식, 다국어 번역, Generative Pre-trained Transformer (GPT) 기반 법률 조항 분석, 생활 언어 변환, 국가 법령정보센터 공공데이터 애플리케이션 프로그래밍 인터페이스 (API) 연계 기능을 제공하였다. 사용자는 근로계약서를 업로드 또는 촬영하여 실시간으로 번역과 법률 분석을 받을 수 있다. 본 연구는 인공지능 기술이 법률 서비스에 접목되어 외국인 노동자의 권리 보장과 사회적 신뢰도 향상에 기여할 수 있음을 보여주었다.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Ⅰ. 서 론 
+최근 통계에 따르면, 장기 체류 외국인 노동자는 10년 전 대비 약 6% 증가하였으며, 이와 관련된 노동 분쟁 역시 증가 추세를 보이고 있었다[1]. 분쟁의 주요 원인은 언어 장벽, 법률 정보 접근성 부족, 그리고 표준화되지 않은 계약서 작성 관행이었다. 특히 한국어 실력이 미흡한 외국인 노동자는 불리한 조건의 계약을 체결하거나, 계약서 자체가 작성되지 않아 임금 체불이나 불법체류로 이어지는 사례가 발생하였다[2]. 현행 외국인 근로자 표준근로계약서 제도는 작성 의무 규정에도 불구하고 실제 이행률이 낮았으며, 정부의 감독 및 강제 집행 권한이 충분하지 않아 형식적 제도에 그치는 경우가 많았다. 이러한 제도적 허점은 임금 체불, 계약 불이행, 불법체류 등 노동 분쟁을 심화시키는 원인이 되었다[3].
+고용주-노동자 간 분쟁 예방과 외국인 노동자 권리 보호를 위하여, 법률 정보를 이해하기 쉽게 제공하는 플랫폼의 필요성이 제기되었다. 이에 본 연구에서는 인공지능 기술을 활용하여 계약서 번역과 법률 분석을 실시간으로 제공하는 “Legal Guide”를 개발하였다. 본 플랫폼은 고용주와 노동자가 동일한 이해를 바탕으로 계약을 체결하도록 돕고, 법률 정보 접근성을 크게 향상시키는 것을 목표로 하였다.
 
-### `npm run build`
+Ⅱ. 본론 
+본 플랫폼의 전체 구조는 OCR 기반 텍스트 인식, 다국어 번역, GPT 기반 법률 요소 분석, 생활 언어 변환, 그리고 법령 정보 연계의 순차적인 절차로 구성되었다.
+사용자는 모바일 애플리케이션을 통해 근로계약서를 업로드하거나 카메라로 촬영할 수 있으며, 업로드된 이미지 파일은 Amazon Simple Storage Service (Amazon S3) 외부 스토리지에 저장되고, 백엔드에서 해당 이미지 경로와 메타데이터를 관리하였다. 저장된 계약서 이미지는 먼저 OCR 모듈을 거쳐 계약서 내의 문자를 정확하게 추출하였다. 이 과정에서는 Google Vision API를 사용하여 다양한 서체, 해상도, 문서 레이아웃을 인식하였고, 한글·영문뿐만 아니라 다국어 문서의 문자 데이터를 효율적으로 디지털 텍스트로 변환하였다. 이러한 전체 동작 과정을 도식화한 시스템 설계도는 [그림 1]과 같다.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+<img width="423" height="246" alt="image" src="https://github.com/user-attachments/assets/b4b77ec6-37ce-4456-b385-caa85e8ff45a" />
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+[그림1] 시스템 설계도
+추출된 텍스트는 Naver Papago API를 통해 사용자가 사전에 설정한 언어로 번역되었다. 이 단계에서는 단순 직역이 아니라 문맥 기반 번역을 수행하여, 외국인 노동자가 근로계약서 내용을 문화적·언어적 차이 없이 이해할 수 있도록 하였다. 번역 과정에서 API 파라미터를 조정해 법률 용어가 정확히 전달되도록 하였고, 불필요한 오역을 최소화하였다. Google Vision API는 다양한 언어와 서체, 문서 레이아웃에서 높은 인식률을 보여 다국적 문서 처리 환경에서도 안정적인 결과를 제공하였다.
+번역된 계약서 데이터는 OpenAI GPT API로 전달되어 법률 요소 탐지 과정을 거쳤다. GPT 모델은 계약서 내에서 임금, 근로시간, 휴가, 해고 사유 등 핵심 근로 조건을 식별하고, 해당 조항이 관련 노동법과 비교해 불리한 조건을 포함하는지 분석하였다. 이를 통해 사용자는 번역된 내용뿐 아니라 법률적 위험 요소까지 직관적으로 확인할 수 있었다. 또한 GPT는 법률 문구를 이해하기 쉬운 생활 언어로 변환하여 비전문가도 쉽게 이해할 수 있도록 하였다. 예를 들어, “근로기준법 제60조 제1항에 의거한 연차유급휴가”라는 표현은 “매년 법적으로 보장된 유급휴가”와 같이 간단히 풀어주었다.
+마지막 단계에서는 GPT가 식별한 각 조항과 관련된 실제 법령을 국가 법령정보센터 공공데이터 API를 통해 조회하였고, 해당 조항의 전문을 하이퍼링크 형태로 제공하였다. 이를 통해 사용자는 번역된 계약서와 관련 법령을 동시에 열람할 수 있어 법률 정보의 신뢰성과 접근성이 향상되었다. 이 모든 과정은 사용자가 문서를 업로드한 직후 실시간으로 수행되었으며, 결과는 모바일 애플리케이션 화면을 통해 직관적으로 제공되었다.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+ <img width="108" height="217" alt="image" src="https://github.com/user-attachments/assets/4e9af1ca-5ad0-4039-be77-c5c522675210" /> <img width="108" height="215" alt="image" src="https://github.com/user-attachments/assets/d71adb79-ff73-4fa1-91e0-f2af7ad12110" />
+[그림2] 메인 페이지 및 문서 기록 페이지
 
-### `npm run eject`
+메인 홈 화면은 사용자 진입점으로, 개인화된 인사 메시지와 함께 "내 기록 보기", "OCR 찍기", "법률 정보 보기"의 세 가지 핵심 메뉴를 제공하였다. "내 기록 보기"에서는 이전에 업로드한 계약서를 날짜별로 조회 및 재분석할 수 있고, 불필요한 문서는 삭제 가능하였다. "OCR 찍기"는 촬영 또는 업로드를 통한 즉시 분석을 지원하였으며, "법률 정보 보기"는 관련 자료로 바로 이동하였다. 하단 탭 구조를 통해 주요 기능 간 전환 속도가 향상되어 사용자 경험(UX)이 개선되었다.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+<img width="217" height="215" alt="image" src="https://github.com/user-attachments/assets/bd0a8805-49f0-4ca0-a200-94a9b6af4cfd" />
+[그림3] OCR 및 번역 화면
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+사용자는 메인 홈 화면에서 "OCR 찍기" 메뉴를 선택하여 근로계약서 분석을 시작할 수 있었다. 첫 단계인 "근로계약서 스캔" 화면에서 문서를 카메라로 촬영하거나 파일을 업로드하면, 시스템은 즉시 OCR을 통해 텍스트를 추출하고 개인정보를 자동 마스킹 처리하였다. 이어서 "번역 결과" 화면으로 전환되었으며, 사용자는 원문, 번역문, 전체 보기 중 원하는 탭을 선택하여 내용을 확인할 수 있었다. 번역 과정은 Naver Papago API를 기반으로 하였으며, 사용자는 하단의 "법률 분석 보기" 버튼을 눌러 GPT 기반의 심화 법률 분석 결과 페이지로 이동할 수 있었다.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+<img width="226" height="215" alt="image" src="https://github.com/user-attachments/assets/ff11e051-96c2-4ad5-b783-d53c6d003177" />
+[그림4] 법률 정보 페이지
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+법률 정보 페이지[그림 4]는 계약서의 법률 조항을 항목별로 분류하여 제공하였으며, 근로계약 관련 법률, 임금 및 퇴직금, 근로시간 및 휴가, 산업재해 보상 등 주요 주제를 카테고리화하였다. 각 항목을 선택하면 상세 페이지가 열리며, 해당 법률 조항의 목적, 관련 법률 정보, 쉬운 설명, 그리고 실제 사례를 포함한 정보가 표시되었다. 이때 “쉬운 설명” 영역은 GPT를 통해 법률 문구를 일상 언어로 변환하여 비전문가도 쉽게 이해할 수 있도록 하였다. 하단의 버튼을 클릭하면 해당 법률의 전문을 국가법령정보센터에서 직접 확인할 수 있도록 하였다.
 
-## Learn More
+Ⅲ. 결론 
+본 연구에서 개발한 "Legal Guide"는 외국인 노동자의 계약 이해도와 법률 정보 접근성을 크게 향상시켜, 고용주-노동자 간 불필요한 분쟁을 예방하는 데 기여하였다. 인공지능 기술을 활용해 계약서 내용을 실시간 번역·분석하고, 법률 정보를 생활 언어로 변환하여 제공함으로써 외국인 노동자의 권리 보호와 사회적 신뢰도 향상에 실질적인 도움을 주었다. 향후 본 플랫폼은 지원 언어를 확대하고, 변호사 상담 연계 기능과 다양한 계약서 유형으로의 확장을 통해 법률 서비스 범위와 활용성을 더욱 넓혀 나갈 계획이다.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+참 고 문 헌 
+[1] 법무부, “출입국·외국인정책 통계연보”, 2024.
+[2] “일했는데 빚더미 앉는 이주노동자…월급 뜯겼는데 되레 소송도,” 한겨레, 2024년 4월 30일.
+[3] 노호창, "한국의 외국인 고용정책과 법적 쟁점," 노동법논총, no. 62, pp. 121-151, 2024.
