@@ -96,7 +96,7 @@ const Summary = () => {
                                 <p>관련법률 정보</p>
                             </div>
                             <p className="row_title">
-                                <strong>법률명: {law.lawName}</strong>
+                                <strong>법률명: {law.translatedLawName}</strong>
                             </p>
                             <div className="content">
                                 {law.translatedSummary && (

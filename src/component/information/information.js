@@ -26,7 +26,7 @@ const Information = () => {
             setError("");
             
             const token = localStorage.getItem("token");
-            const lawIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            const lawIds = [171, 172, 173, 174, 175, 176];
             const randomLaws = [];
 
             const shuffled = lawIds.sort(() => 0.5 - Math.random());
@@ -162,7 +162,7 @@ const Information = () => {
                                 }>
                                 <IoDocumentTextOutline className="fileicon" />
                                 <div className="row_inform_text">
-                                    <p>{law.lawName || "법률명 없음"}</p>
+                                    <p>{law.translatedLawName || "법률명 없음"}</p>
                                     <span>참조 번호: {law.referenceNumber || "N/A"}</span>
                                 </div>
                                 <TiDeleteOutline

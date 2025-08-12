@@ -209,13 +209,15 @@ const Mypage = () => {
                     <label>사용언어</label>
                     <SelectLanguage value={lang} onChange={handleLanguageChange} />
 
+{/* 
+
                     <label>작업 위치</label>
                     <input 
                         className="inputBox" 
                         value={workLocation} 
                         onChange={e => setWorkLocation(e.target.value)} 
                     />
-
+*/}
                     <label>경력 (년)</label>
                     <input 
                         className="inputBox" 
